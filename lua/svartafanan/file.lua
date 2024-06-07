@@ -25,9 +25,6 @@ function M.read(cube_size)
 	-- decode the json from the file
 	local json = decode_json(file_content)
 
-	-- remove file end of lines
-	-- full_scramble_notation = json.availableMoves:gsub("\n", "")
-
 	file:close()
 
 	local return_table = {

@@ -35,8 +35,6 @@ function M.scramble(cube_size)
 		table.insert(scramble, get_random_move(file_contents.availableMoves, previous_move))
 	end
 
-	print(vim.inspect(scramble))
-
 	return scramble
 end
 
