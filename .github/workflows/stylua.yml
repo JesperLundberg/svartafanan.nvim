@@ -1,0 +1,24 @@
+name: stylua
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  style:
+    runs-on: ubuntu-latest
+    name: style
+    steps:
+      - uses: actions/checkout@main
+
+      - uses: JohnnyMorganz/stylua-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check .
