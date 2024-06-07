@@ -1,38 +1,42 @@
+local utils = require("svartafanan.utils")
+
 local M = {}
 
-local function get_plugin_path()
-	-- This assumes your plugin name is 'myplugin' and it's located in the standard Neovim runtime path
-	local runtime_path = vim.fn.stdpath("data") .. "/lazy/svartafanan.nvim"
-	return runtime_path
+local function decode_json(json)
+	return vim.fn.json_decode(json)
 end
 
 function M.read(cube_size)
-	local plugin_path = get_plugin_path()
+	-- Get the path to the plugin directory
+	local plugin_path = utils.get_value_fuzzy(vim.api.nvim_list_runtime_paths(), "svartafanan.nvim")
 
 	-- Read the scramble file based on the cube size
-	local filepath = plugin_path .. "/assets/cube_scramble_data/" .. cube_size
-
-	print("filepath: ", filepath)
+	local filepath = plugin_path .. "/assets/cube_scramble_data/" .. cube_size .. ".json"
 
 	local file = io.open(filepath, "r")
 
-	print("file: ", file)
-
 	if not file then
-		return "File for " .. cube_size .. " not found"
+		vim.notify("File for " .. cube_size .. " not found", vim.log.levels.ERROR)
 	end
 
 	-- read the entire file to get the full notion of the availble movements on the cube
-	local full_scramble_notation = file:read("*a")
+	local file_content = file:read("*a")
+
+	-- decode the json from the file
+	local json = decode_json(file_content)
+
+	-- remove file end of lines
+	-- full_scramble_notation = json.availableMoves:gsub("\n", "")
 
 	file:close()
 
-	-- split the notation into a table
-	full_scramble_notation = vim.split(full_scramble_notation, " ")
+	local return_table = {
+		numberOfMoves = json.numberOfMoves,
+		availableMoves = vim.split(json.availableMoves, " "),
+	}
 
-	vim.notify("full_scramble_notation: " .. vim.inspect(full_scramble_notation), vim.log.levels.INFO)
-
-	return full_scramble_notation
+	-- split the notation into a table and return the table
+	return return_table
 end
 
 return M

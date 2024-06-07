@@ -1,0 +1,4 @@
+{
+  "numberOfMoves": 20,
+  "availableMoves": "R L U D F B R' L' U' D' F' B' R2 L2 U2 D2 F2 B2"
+}
