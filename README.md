@@ -1,14 +1,12 @@
-# tomat.nvim
+# svartafanan.nvim
 
 #### Demo
 
 #### Why?
 
-[Black Flag]()
+Mostly becasue I wanted to create another plugin but also because I use the cube to get micropauses to think during my daily development work, or when I wait for something (compilation, rebuild or similar).
 
-#### Requirements
-
-You must run [lazy.nvim](https://github.com/folke/lazy.nvim) package manager for the file to be found.
+Why the name SvartaFanan? Well, there are a few reasons. The main one was that I listened to [Nasum - Den Svarta Fanan](https://open.spotify.com/track/0gdarqfBPUKnSdbfaNA34t?si=799baa90579a4818) when I got the idea and wanted to honor Miezsko, vocalist, guitarist and frontman of the band.
 
 #### How to install
 
@@ -34,7 +32,10 @@ Example (To start a session):
 
 #### TODO
 
-- [ ] Allow more package managers than just lazy
+- [x] Allow more package managers than just lazy
+- [ ] Add more sizes to get scrambles for
+- [ ] Add timing functionality
+- [ ] Be able to get another scramble if the window is already opened
 
 #### Local development
 
@@ -45,3 +46,5 @@ nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests
 ```
 
 #### Credits
+
+Miezsko Talarczyk - for creating great music. RIP.

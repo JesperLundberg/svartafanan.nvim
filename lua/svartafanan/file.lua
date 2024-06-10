@@ -2,10 +2,15 @@ local utils = require("svartafanan.utils")
 
 local M = {}
 
+--- Decode a json string to a lua table
+-- @param json string
 local function decode_json(json)
 	return vim.fn.json_decode(json)
 end
 
+--- Read the scramble file for the cube size
+-- @param cube_size number
+-- @return table
 function M.read(cube_size)
 	-- Get the path to the plugin directory
 	local plugin_path = utils.get_value_fuzzy(vim.api.nvim_list_runtime_paths(), "svartafanan.nvim")
