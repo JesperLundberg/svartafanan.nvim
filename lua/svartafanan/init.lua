@@ -27,9 +27,4 @@ vim.api.nvim_create_user_command("SvartaFanan", function(opts)
 	commands[opts.args]()
 end, { nargs = "*", complete = tab_completion, desc = "SvartaFanan plugin" })
 
-function M.setup(opts)
-	-- Setup the plugin
-	require("tomat.config").setup(opts)
-end
-
 return M
