@@ -3,8 +3,8 @@ local window = require("svartafanan.window")
 
 local M = {}
 
---- Main function to generate a scramble and display it in a floating window
--- @param cube_size number
+---Main function to generate a scramble and display it in a floating window
+---@param cube_size string
 function M.main(cube_size)
 	-- Open new temporary buffer
 	local win, buf = window.open()

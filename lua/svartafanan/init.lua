@@ -1,6 +1,7 @@
 local M = {}
 
 -- Available commands for SvartaFanan
+---@type table<string, function>
 local sub_cmds = {
 	["2x2"] = function()
 		require("svartafanan.main").main("two_by_two")

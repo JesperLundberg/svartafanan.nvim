@@ -1,12 +1,12 @@
 local M = {}
 
--- find out if table has the provided value
--- @param tab table
--- @param val string
--- @return string
+---find out if table has the provided value
+---@param tab table?
+---@param val string
+---@return string?
 function M.get_value_fuzzy(tab, val)
 	if tab == nil then
-		return false
+		return nil
 	end
 
 	for _, value in ipairs(tab) do
@@ -16,7 +16,7 @@ function M.get_value_fuzzy(tab, val)
 		end
 	end
 
-	return false
+	return nil
 end
 
 return M
