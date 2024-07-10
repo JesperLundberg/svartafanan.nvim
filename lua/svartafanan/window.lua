@@ -2,8 +2,9 @@ local api = vim.api
 
 local M = {}
 
--- Method to center a string in a window
--- @param str string
+---Method to center a string in a window
+---@param str string
+---@return string
 local function center(str)
 	-- Get the width of the current window
 	local width = api.nvim_win_get_width(0)
@@ -12,8 +13,8 @@ local function center(str)
 	return string.rep(" ", shift) .. str
 end
 
--- Floating result window
--- @return number, number
+---Floating result window
+---@return number, number
 function M.open()
 	-- Create buffers for both windows
 	local buf = api.nvim_create_buf(false, true)
@@ -73,10 +74,10 @@ function M.open()
 	return win, buf -- Return window and buffer handles
 end
 
--- Method to set the content of the window
--- @param win window handle
--- @param buf buffer handle
--- @param string text_to_print
+---Method to set the content of the window
+---@param win integer window handle
+---@param buf integer buffer handle
+---@param text_to_print string
 function M.update(win, buf, text_to_print)
 	-- Make the buffer modifiable
 	api.nvim_set_option_value("modifiable", true, { buf = buf })

@@ -2,10 +2,10 @@ local file = require("svartafanan.file")
 
 local M = {}
 
---- Get a random move from the available movements
--- @param full_scramble_notation table
--- @param previous_move string
--- @return string
+---Get a random move from the available movements
+---@param full_scramble_notation table
+---@param previous_move string
+---@return string
 local function get_random_move(full_scramble_notation, previous_move)
 	local random_number
 	local random_move
@@ -24,9 +24,9 @@ local function get_random_move(full_scramble_notation, previous_move)
 	return random_move
 end
 
---- Generate a scramble for the cube
--- @param cube_size number
--- @return table
+---Generate a scramble for the cube
+---@param cube_size string
+---@return table
 function M.scramble(cube_size)
 	-- Read the scramble file based on the cube size
 	local file_contents = file.read(cube_size)
