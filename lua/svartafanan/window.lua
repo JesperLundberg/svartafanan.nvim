@@ -2,6 +2,14 @@ local api = vim.api
 
 local M = {}
 
+---svartafanan buffer
+---@type integer
+M.buf = nil
+
+---svartafanan window
+---@type integer
+M.win = nil
+
 ---Method to center a string in a window
 ---@param str string
 ---@return string
@@ -14,15 +22,12 @@ local function center(str)
 end
 
 ---Floating result window
----@return number, number
 function M.open()
-	-- Create buffers for both windows
-	local buf = api.nvim_create_buf(false, true)
-	local border_buf = api.nvim_create_buf(false, true)
+	M.buf = api.nvim_create_buf(false, true)
 
 	-- Set the buffer to be a temporary buffer that will be deleted when it is no longer in use
-	api.nvim_set_option_value("bufhidden", "wipe", { buf = buf })
-	api.nvim_set_option_value("filetype", "SvartaFanan", { buf = buf })
+	api.nvim_set_option_value("bufhidden", "wipe", { buf = M.buf })
+	api.nvim_set_option_value("filetype", "SvartaFanan", { buf = M.buf })
 
 	-- Get dimensions of neovim editor
 	local width = api.nvim_get_option_value("columns", { scope = "global" })
@@ -34,68 +39,63 @@ function M.open()
 	local row = math.ceil((height - win_height) / 2 - 1)
 	local col = math.ceil((width - win_width) / 2)
 
-	local border_opts = {
-		style = "minimal",
-		relative = "editor",
-		width = win_width + 2,
-		height = win_height + 2,
-		row = row - 1,
-		col = col - 1,
-	}
-
-	local opts = {
+	M.win = api.nvim_open_win(M.buf, true, {
 		style = "minimal",
 		relative = "editor",
 		width = win_width,
 		height = win_height,
 		row = row,
 		col = col,
-	}
+		border = "double",
+	})
 
-	-- Set border buffer lines
-	local border_lines = { "╔" .. string.rep("═", win_width) .. "╗" }
-	local middle_line = "║" .. string.rep(" ", win_width) .. "║"
+	-- fill the buffer with empty lines
+	local empty_lines = {}
 	for _ = 1, win_height do
-		table.insert(border_lines, middle_line)
+		table.insert(empty_lines, "")
 	end
-	table.insert(border_lines, "╚" .. string.rep("═", win_width) .. "╝")
-	api.nvim_buf_set_lines(border_buf, 0, -1, false, border_lines)
+	api.nvim_buf_set_lines(M.buf, 0, -1, false, empty_lines)
 
-	-- Open the border window first then the actual window
-	api.nvim_open_win(border_buf, true, border_opts)
-	local win = api.nvim_open_win(buf, true, opts)
+	-- set the title
+	M.update("SvartaFanan", 1)
 
-	-- If the window is closed, close the border window as well
-	api.nvim_command('au BufWipeout <buffer> exe "silent bwipeout! "' .. border_buf)
-
-	-- we can add title already here, because first line will never change
-	api.nvim_buf_set_lines(buf, 0, -1, false, { center("SvartaFanan"), "", "" })
-
-	return win, buf -- Return window and buffer handles
+	-- if the svartafanan window gets closed, delete the buffer and stop the timer
+	api.nvim_create_autocmd("WinClosed", {
+		pattern = tostring(M.win),
+		group = api.nvim_create_augroup("SvartaFanan", {}),
+		callback = function()
+			api.nvim_buf_delete(M.buf, { force = true })
+			M.buf = nil
+			M.win = nil
+			require("svartafanan.timer").stop_timer()
+		end,
+	})
 end
 
 ---Method to set the content of the window
----@param win integer window handle
----@param buf integer buffer handle
 ---@param text_to_print string
-function M.update(win, buf, text_to_print)
-	-- Make the buffer modifiable
-	api.nvim_set_option_value("modifiable", true, { buf = buf })
+---@param line integer index of a line to update (1-indexed)
+function M.update(text_to_print, line)
+	if not M.buf then
+		return
+	end
 
-	-- Get the current lines in the buffer
-	local current_lines = api.nvim_buf_get_lines(buf, 0, -1, false)
+	api.nvim_buf_set_lines(M.buf, line - 1, line, false, { center(text_to_print) })
 
-	-- Add the new lines to the current lines
-	local lines_to_write = vim.list_extend(current_lines, { center(text_to_print) })
+	local height = api.nvim_win_get_height(M.win)
+	api.nvim_win_set_cursor(M.win, { height, 0 })
+end
 
-	-- Set the updated lines
-	api.nvim_buf_set_lines(buf, 0, -1, false, lines_to_write)
+---Update last line of the window
+---@param time number
+function M.update_timer(time)
+	if not M.buf then
+		return
+	end
 
-	-- Make the buffer unmodifiable
-	api.nvim_set_option_value("modifiable", false, { buf = buf })
+	local height = api.nvim_win_get_height(M.win)
 
-	-- Set the cursor to the last line
-	api.nvim_win_set_cursor(win, { #lines_to_write, 0 })
+	api.nvim_buf_set_lines(M.buf, height - 1, height, false, { center(string.format("Time: %.2f", time)) })
 end
 
 return M
